@@ -196,8 +196,33 @@
       display: none;
    }
 
+   .hero {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      padding: 20px;
+    }
+    
+    .hero h1 {
+      font-size: 8rem;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+    
+    .hero p {
+      font-size: 3rem;
+      margin-bottom: 30px;
+    }
+
    .home{
-      background:url('../images/home-bg.jpg') no-repeat;
+      background:url('../images/home-bg2.jpeg') no-repeat;
       background-size: cover;
       background-position: center;
    }

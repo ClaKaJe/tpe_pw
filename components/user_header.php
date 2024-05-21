@@ -8,9 +8,13 @@ if (isset($_COOKIE['user_id'])) {
    $user_id = '';
 }
 
-$select_user = $conn->prepare("SELECT name FROM `users` WHERE id = ?");
+$select_user = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
 $select_user->execute([$user_id]);
 $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+
+$user_name = $fetch_user['name'];
+$user_email = $fetch_user['email'];
+$user_number = $fetch_user['number'];
 ?>
 
 <!DOCTYPE html>
@@ -66,9 +70,9 @@ $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
                   </li>
                   <li><a href="#">help<i class="fas fa-angle-down"></i></a>
                      <ul>
-                        <li><a href="about.php">about us</a></i></li>
-                        <li><a href="contact.php">contact us</a></i></li>
-                        <li><a href="contact.php#faq">FAQ</a></i></li>
+                        <li><a href="/#about">about us</a></i></li>
+                        <li><a href="/#contact">contact us</a></i></li>
+                        <li><a href="/#faq">FAQ</a></i></li>
                      </ul>
                   </li>
                </ul>
@@ -84,7 +88,7 @@ $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
                      </ul>
                   </li>
                <?php else : ?>
-                  <li><a href="#"><?= $fetch_user['name'] ?> <i class="fas fa-angle-down"></i></a>
+                  <li><a href="#"><?= $user_name ?> <i class="fas fa-angle-down"></i></a>
                      <ul>
                         <li><a href="update.php">Update profile</a></li>
                         <li><a href="components/user_logout.php" onclick="return confirm('logout from this website?');">Logout</a>

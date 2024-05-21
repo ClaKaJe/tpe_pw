@@ -10,7 +10,7 @@ include 'components/save_send.php';
 
 <div class="home">
 
-   <section class="center">
+   <!-- <section class="center">
 
       <form action="search.php" method="post">
          <h3>find your perfect home</h3>
@@ -113,6 +113,14 @@ include 'components/save_send.php';
          <input type="submit" value="search property" name="h_search" class="btn">
       </form>
 
+   </section> -->
+
+   <section class="hero">
+      <div class="hero-content">
+         <h1 class="heading">Welcome to Your Dream Home</h1>
+         <p>Find the perfect real estate goods to enhance your living space</p>
+         <a href="#listings" class="btn">Browse Products</a>
+      </div>
    </section>
 
 </div>
@@ -170,14 +178,14 @@ include 'components/save_send.php';
 <!-- services section ends -->
 
 <!-- listings section starts  -->
-<section class="listings">
+<section class="listings" id="listings">
 
    <h1 class="heading">latest listings</h1>
 
    <div class="box-container">
       <?php
       $total_images = 0;
-      $select_properties = $conn->prepare("SELECT * FROM `property` ORDER BY date DESC LIMIT 6");
+      $select_properties = $conn->prepare("SELECT * FROM `property` ORDER BY date DESC LIMIT 3");
       $select_properties->execute();
       if ($select_properties->rowCount() > 0) {
          while ($fetch_property = $select_properties->fetch(PDO::FETCH_ASSOC)) {
@@ -234,7 +242,7 @@ include 'components/save_send.php';
                   </div>
                </div>
                <div class="box">
-                  <div class="price"><i class="fas fa-indian-rupee-sign"></i><span><?= $fetch_property['price']; ?></span></div>
+                  <div class="price"><i class="fas fa-dollar-sign"></i><span><?= $fetch_property['price']; ?></span></div>
                   <h3 class="name"><?= $fetch_property['property_name']; ?></h3>
                   <p class="location"><i class="fas fa-map-marker-alt"></i><span><?= $fetch_property['address']; ?></span></p>
                   <div class="flex">
@@ -267,4 +275,12 @@ include 'components/save_send.php';
 </section>
 <!-- listings section ends -->
 
-<?php include 'components/footer.php'; ?>
+<?php
+
+include 'components/about.php';
+
+include 'components/contact.php';
+
+include 'components/footer.php';
+
+?>

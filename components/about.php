@@ -1,12 +1,6 @@
-<?php  
-
-include 'components/user_header.php';
-
-?>
-
 <!-- about section starts  -->
 
-<section class="about">
+<section class="about" id="about">
 
    <div class="row">
       <div class="image">
@@ -170,5 +164,3 @@ include 'components/user_header.php';
 </section>
 
 <!-- review section ends -->
-
-<?php include 'components/footer.php'; ?>
