@@ -1,8 +1,8 @@
 <?php
 
-   $db_name = 'mysql:dbname=tpe_bd;host=127.0.0.1';
-   $db_user_name = 'root';
-   $db_user_pass = 'ZeussemariaDB';
+   $db_name = getenv('DB_NAME');
+   $db_user_name = getenv('DB_USER_NAME');
+   $db_user_pass = getenv('DB_USER_PASS');
 
    $conn = new PDO($db_name, $db_user_name, $db_user_pass, [
        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION  
