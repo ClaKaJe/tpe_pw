@@ -87,8 +87,7 @@ include 'components/save_send.php';
 
 </section>
 
-<!-- search filter section ends -->
-
+<!-- search
 <div id="filter-btn" class="fas fa-filter"></div>
 
 <?php
