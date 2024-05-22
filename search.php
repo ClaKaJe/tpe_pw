@@ -10,7 +10,7 @@ include 'components/save_send.php';
 
 <section class="filters" style="padding-bottom: 0;">
 
-   <form action="" method="post">
+   <form action="" method="GET">
       <div id="close-filter"><i class="fas fa-times"></i></div>
       <h3>filter your search</h3>
 
@@ -92,90 +92,57 @@ include 'components/save_send.php';
 
 <?php
 
-if (isset($_POST['h_search'])) {
+if (isset($_GET['filter_search'])) {
 
-   $h_location = filter_var($_POST['h_location'], FILTER_SANITIZE_STRING);
-   $h_type = filter_var($_POST['h_type'], FILTER_SANITIZE_STRING);
-   $h_offer = filter_var($_POST['h_offer'], FILTER_SANITIZE_STRING);
-   $h_min = filter_var($_POST['h_min'], FILTER_SANITIZE_STRING);
-   $h_max = filter_var($_POST['h_max'], FILTER_SANITIZE_STRING);
+   $propety_name = $_GET['propety_name'];
+   $location = $_GET['location'];
+   $type = $_GET['type'];
+   $offer = $_GET['offer'];
+   $bhk = $_GET['bhk'];
+   $min = $_GET['min'];
+   $max = $_GET['max'];
+   $status = $_GET['status'];
+   $furnished = $_GET['furnished'];
 
-   // $select_properties = $conn->prepare("SELECT * FROM `property` WHERE address = :h_location AND type = :h_type AND offer = :h_offer AND price BETWEEN :h_min AND :h_max ORDER BY date DESC");
+   $conditions = array();
 
-   if (!empty($_POST['h_location'])) {
+   if (!empty($_GET['property_name'])) {
+      $conditions[] = "propety_name = :propety_name";
+   }
+   if (!empty($_GET['location'])) {
       $conditions[] = "address = :location";
    }
-   if (!empty($_POST['h_type'])) {
+   if (!empty($_GET['type'])) {
       $conditions[] = "type = :type";
    }
-   if (!empty($_POST['h_offer'])) {
+   if (!empty($_GET['offer'])) {
       $conditions[] = "offer = :offer";
    }
-   if (!empty($_POST['h_min'])) {
-      $conditions[] = "price >= :min";
-   }
-   if (!empty($_POST['h_max'])) {
-      $conditions[] = "price <= :max";
-   }
-
-   $sql = "SELECT * FROM `property`";
-   if (!empty($conditions)) {
-      $sql .= " WHERE " . implode(" AND ", $conditions);
-   }
-   $sql .= " ORDER BY date DESC";
-
-   $select_properties = $conn->prepare($sql);
-
-   $select_properties->bindParam(':h_location', $h_location);
-   $select_properties->bindParam(':h_type', $h_type);
-   $select_properties->bindParam(':h_offer', $h_offer);
-   $select_properties->bindParam(':h_min', $h_min);
-   $select_properties->bindParam(':h_max', $h_max);
-   $select_properties->execute();
-
-} elseif (isset($_POST['filter_search'])) {
-
-   $location = filter_var($_POST['location'], FILTER_SANITIZE_STRING);
-   $type = filter_var($_POST['type'], FILTER_SANITIZE_STRING);
-   $offer = filter_var($_POST['offer'], FILTER_SANITIZE_STRING);
-   $bhk = filter_var($_POST['bhk'], FILTER_SANITIZE_STRING);
-   $min = filter_var($_POST['min'], FILTER_SANITIZE_STRING);
-   $max = filter_var($_POST['max'], FILTER_SANITIZE_STRING);
-   $status = filter_var($_POST['status'], FILTER_SANITIZE_STRING);
-   $furnished = filter_var($_POST['furnished'], FILTER_SANITIZE_STRING);
-
-   // $select_properties = $conn->prepare("SELECT * FROM `property` WHERE address = :location AND type = :type AND offer = :offer AND bhk = :bhk AND status = :status AND furnished = :furnished AND price BETWEEN :min AND :max ORDER BY date DESC");
-
-   if (!empty($_POST['location'])) {
-      $conditions[] = "address = :location";
-   }
-   if (!empty($_POST['type'])) {
-      $conditions[] = "type = :type";
-   }
-   if (!empty($_POST['offer'])) {
-      $conditions[] = "offer = :offer";
-   }
-   if(!empty($_POST['bhk'])) {
+   if (!empty($_GET['bhk'])) {
       $conditions[] = "bhk = :bhk";
    }
-   if (!empty($_POST['min'])) {
+   if (!empty($_GET['min'])) {
       $conditions[] = "price >= :min";
    }
-   if (!empty($_POST['max'])) {
+   if (!empty($_GET['max'])) {
       $conditions[] = "price <= :max";
    }
-   if(!empty($_POST['status'])) {
+   if (!empty($_GET['status'])) {
       $conditions[] = "status = :status";
    }
-   if(!empty($_POST['furnished'])) {
+   if (!empty($_GET['furnished'])) {
       $conditions[] = "furnished = :furnished";
    }
-   
+
+   var_dump($conditions);
+
    $sql = "SELECT * FROM `property`";
-   if (!empty($conditions)) {
-      $sql .= " WHERE " . implode(" AND ", $conditions);
-   }
-   $sql .= " ORDER BY date DESC";
+   // if (!empty($conditions)) {
+   //    $sql .= " WHERE " . implode(" AND ", $conditions);
+   // }
+   // $sql .= " ORDER BY date DESC";
+
+   // echo $sql;
 
    $select_properties = $conn->prepare($sql);
 
@@ -200,101 +167,17 @@ if (isset($_POST['h_search'])) {
 <section class="listings">
 
    <?php
-   if (isset($_POST['h_search']) or isset($_POST['filter_search'])) {
+   var_dump($conditions);
+   if (isset($_GET['filter_search'])) {
       echo '<h1 class="heading">search results</h1>';
    } else {
       echo '<h1 class="heading">latest listings</h1>';
    }
+
+   require 'components/listings.php';
    ?>
 
-   <div class="box-container">
-      <?php
-      $total_images = 0;
-      if ($select_properties->rowCount() > 0) {
-         while ($fetch_property = $select_properties->fetch(PDO::FETCH_ASSOC)) {
-            $select_user = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
-            $select_user->execute([$fetch_property['user_id']]);
-            $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
 
-            if (!empty($fetch_property['image_02'])) {
-               $image_coutn_02 = 1;
-            } else {
-               $image_coutn_02 = 0;
-            }
-            if (!empty($fetch_property['image_03'])) {
-               $image_coutn_03 = 1;
-            } else {
-               $image_coutn_03 = 0;
-            }
-            if (!empty($fetch_property['image_04'])) {
-               $image_coutn_04 = 1;
-            } else {
-               $image_coutn_04 = 0;
-            }
-            if (!empty($fetch_property['image_05'])) {
-               $image_coutn_05 = 1;
-            } else {
-               $image_coutn_05 = 0;
-            }
-
-            $total_images = (1 + $image_coutn_02 + $image_coutn_03 + $image_coutn_04 + $image_coutn_05);
-
-            $select_saved = $conn->prepare("SELECT * FROM `saved` WHERE property_id = ? and user_id = ?");
-            $select_saved->execute([$fetch_property['id'], $user_id]);
-
-      ?>
-            <form action="" method="POST">
-               <div class="box">
-                  <input type="hidden" name="property_id" value="<?= $fetch_property['id']; ?>">
-                  <?php
-                  if ($select_saved->rowCount() > 0) {
-                  ?>
-                     <button type="submit" name="save" class="save"><i class="fas fa-heart"></i><span>saved</span></button>
-                  <?php
-                  } else {
-                  ?>
-                     <button type="submit" name="save" class="save"><i class="far fa-heart"></i><span>save</span></button>
-                  <?php
-                  }
-                  ?>
-                  <div class="thumb">
-                     <p class="total-images"><i class="far fa-image"></i><span><?= $total_images; ?></span></p>
-                     <img src="uploaded_files/<?= $fetch_property['image_01']; ?>" alt="">
-                  </div>
-                  <div class="admin">
-                     <h3><?= substr($fetch_user['name'], 0, 1); ?></h3>
-                     <div>
-                        <p><?= $fetch_user['name']; ?></p>
-                        <span><?= $fetch_property['date']; ?></span>
-                     </div>
-                  </div>
-               </div>
-               <div class="box">
-                  <div class="price"><i class="fas fa-indian-rupee-sign"></i><span><?= $fetch_property['price']; ?></span></div>
-                  <h3 class="name"><?= $fetch_property['property_name']; ?></h3>
-                  <p class="location"><i class="fas fa-map-marker-alt"></i><span><?= $fetch_property['address']; ?></span></p>
-                  <div class="flex">
-                     <p><i class="fas fa-house"></i><span><?= $fetch_property['type']; ?></span></p>
-                     <p><i class="fas fa-tag"></i><span><?= $fetch_property['offer']; ?></span></p>
-                     <p><i class="fas fa-bed"></i><span><?= $fetch_property['bhk']; ?> BHK</span></p>
-                     <p><i class="fas fa-trowel"></i><span><?= $fetch_property['status']; ?></span></p>
-                     <p><i class="fas fa-couch"></i><span><?= $fetch_property['furnished']; ?></span></p>
-                     <p><i class="fas fa-maximize"></i><span><?= $fetch_property['carpet']; ?>sqft</span></p>
-                  </div>
-                  <div class="flex-btn">
-                     <a href="view_property.php?get_id=<?= $fetch_property['id']; ?>" class="btn">view property</a>
-                     <input type="submit" value="send enquiry" name="send" class="btn">
-                  </div>
-               </div>
-            </form>
-      <?php
-         }
-      } else {
-         echo '<p class="empty">no results found!</p>';
-      }
-      ?>
-
-   </div>
 
 </section>
 

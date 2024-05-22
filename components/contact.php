@@ -3,29 +3,14 @@
 if (isset($_POST['send'])) {
 
    $msg_id = create_unique_id();
+   $user_id = $_COOKIE['user_id'];
 
-   $name = $_POST['name'];
-   $email = $_POST['email'];
-   $number = $_POST['number'];
    $message = $_POST['message'];
 
-   $verify_contact = $conn->prepare(
-      "SELECT * FROM `messages` WHERE name = :name AND email = :email AND number = :number AND message = :message"
-   );
-   $verify_contact->execute([
-      ':name' => $name,
-      ':email' => $email,
-      ':number' => $number,
-      ':message' => $message
-   ]);
-
-   if ($verify_contact->rowCount() > 0) {
-      $warning_msg[] = 'message sent already!';
-   } else {
-      $send_message = $conn->prepare("INSERT INTO `messages`(id, name, email, number, message) VALUES(?,?,?,?,?)");
-      $send_message->execute([$msg_id, $name, $email, $number, $message]);
-      $success_msg[] = 'message send successfully!';
-   }
+   $send_message = $conn->prepare("INSERT INTO `messages`(id, user_id, message) VALUES(?,?,?)");
+   $send_message->execute([$msg_id, $user_id, $message]);
+   
+   $success_msg[] = 'message send successfully!';
 }
 
 ?>

@@ -23,7 +23,6 @@ if (isset($_POST['save'])) {
    }
 }
 
-var_dump($_POST);
 if (isset($_POST['send']) && $_POST['send'] !== "send message") {
    if ($user_id != '') {
 
@@ -49,14 +48,3 @@ if (isset($_POST['send']) && $_POST['send'] !== "send message") {
       $warning_msg[] = 'please login first!';
    }
 }
-
-// if (isset($_POST['send']) && $_POST['send'] === "send message") {
-//    if ($user_id != '') {
-
-//       $request_id = create_unique_id();
-
-//       $send_request = $conn->prepare("INSERT INTO `messages`(id, user_id, message) VALUES(?,?,?)");
-//       $send_request->execute([$request_id, $user_id, $user_id, $receiver]);
-//       $success_msg[] = 'request sent successfully!';
-//    }
-// }
